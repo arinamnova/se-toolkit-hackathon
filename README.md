@@ -51,13 +51,14 @@ Version 2 builds upon Version 1:
 > 2. You are advised to use the setup from Lab 8 as the base to iterate from.
 > 3. `Telegram` bots deployed on a university VM can fail to receive messages when hosted there.
 
-## Task 3 (product version 1 approved by TA during the lab).
-- Implement both versions outlined in the plan
-- Publish all code as a repo on github.
-- Dockerize all services.
+## Task 3.
+
+Implement both versions outlined in the plan:
+- Publish all code as a repo on github;
+- Dockerize all services;
 - Deploy it to be accessible to use.
 
-Version 1 must be shown and approved by the TA during the lab. 
+‼️ Version 1 must be shown and approved by the TA during the lab. 
 Version 2 can be done during the lab or after the lab before the usual deadline.
 
 

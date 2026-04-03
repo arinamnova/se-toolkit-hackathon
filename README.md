@@ -49,8 +49,12 @@ Version 2 builds upon Version 1:
 - address TA feedback from the lab;
 - deploy and make it available to use.
 
-Important to note:
-- The product must have these components each fulfilling a useful function: Backend, Database, and User-facing Client (web, mobile or LLM-powered agent, e.g. `nanobot`).
+The product must have these components each fulfilling a useful function: 
+- backend;
+- database;
+- end-user-facing Client (web, mobile or LLM-powered agent, e.g. `nanobot`).
+
+Note:
 - You can use the setup from Lab 8 or start from scratch.
 - `Telegram` bots are being blocked on university VMs.
 

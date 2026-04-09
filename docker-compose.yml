@@ -1,0 +1,126 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      additional_contexts:
+        workspace: .
+      args:
+        REGISTRY_PREFIX_DOCKER_HUB: ${REGISTRY_PREFIX_DOCKER_HUB:-}
+    restart: unless-stopped
+    networks:
+      - cat-manager-network
+    ports:
+      - ${BACKEND_HOST_ADDRESS:?'BACKEND_HOST_ADDRESS is required'}:${BACKEND_HOST_PORT:?'BACKEND_HOST_PORT is required'}:${BACKEND_CONTAINER_PORT}
+    environment:
+      - NAME=${BACKEND_NAME:?'BACKEND_NAME is required'}
+      - DEBUG=${BACKEND_DEBUG:?'BACKEND_DEBUG is required'}
+      - ADDRESS=${BACKEND_CONTAINER_ADDRESS:?'BACKEND_CONTAINER_ADDRESS is required'}
+      - PORT=${BACKEND_CONTAINER_PORT:?'BACKEND_CONTAINER_PORT is required'}
+      - RELOAD=${BACKEND_RELOAD:?'BACKEND_RELOAD is required'}
+      - UVICORN_HOST=${BACKEND_CONTAINER_ADDRESS}
+      - UVICORN_PORT=${BACKEND_CONTAINER_PORT}
+      - UVICORN_RELOAD=${BACKEND_RELOAD}
+      - CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-["*"]}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${POSTGRES_DB:?'POSTGRES_DB is required'}
+      - DB_USER=${POSTGRES_USER:?'POSTGRES_USER is required'}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:?'POSTGRES_PASSWORD is required'}
+      - LLM_API_KEY=${LLM_API_KEY:?'LLM_API_KEY is required'}
+      - LLM_API_BASE_URL=http://qwen-code-api:${QWEN_CODE_API_CONTAINER_PORT:?'QWEN_CODE_API_CONTAINER_PORT is required'}/v1
+      - LLM_API_MODEL=${LLM_API_MODEL:?'LLM_API_MODEL is required'}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: ${REGISTRY_PREFIX_DOCKER_HUB:-}postgres:18.3-alpine
+    restart: unless-stopped
+    networks:
+      - cat-manager-network
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:?'POSTGRES_DB is required'}
+      - POSTGRES_USER=${POSTGRES_USER:?'POSTGRES_USER is required'}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?'POSTGRES_PASSWORD is required'}
+    ports:
+      - ${POSTGRES_HOST_ADDRESS:?'POSTGRES_HOST_ADDRESS is required'}:${POSTGRES_HOST_PORT:?'POSTGRES_HOST_PORT is required'}:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  caddy:
+    image: ${REGISTRY_PREFIX_DOCKER_HUB:-}caddy:2.11-alpine
+    networks:
+      - cat-manager-network
+    depends_on:
+      - backend
+    environment:
+      - CADDY_CONTAINER_PORT=${CADDY_CONTAINER_PORT:?'CADDY_CONTAINER_PORT is required'}
+      - BACKEND_CONTAINER_PORT=${BACKEND_CONTAINER_PORT:?'BACKEND_CONTAINER_PORT is required'}
+    ports:
+      - ${GATEWAY_HOST_ADDRESS:?'GATEWAY_HOST_ADDRESS is required'}:${GATEWAY_HOST_PORT:?'GATEWAY_HOST_PORT is required'}:${CADDY_CONTAINER_PORT}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - client-web-flutter:/srv/flutter:ro
+
+  qwen-code-api:
+    build:
+      context: ./qwen-code-api
+      args:
+        REGISTRY_PREFIX_DOCKER_HUB: ${REGISTRY_PREFIX_DOCKER_HUB:-}
+    restart: unless-stopped
+    networks:
+      - cat-manager-network
+    ports:
+      - ${QWEN_CODE_API_HOST_ADDRESS:?'QWEN_CODE_API_HOST_ADDRESS is required'}:${QWEN_CODE_API_HOST_PORT:?'QWEN_CODE_API_HOST_PORT is required'}:${QWEN_CODE_API_CONTAINER_PORT:-8080}
+    volumes:
+      - ~/.qwen:/mnt/qwen-creds:ro
+    environment:
+      - PORT=${QWEN_CODE_API_CONTAINER_PORT:-8080}
+      - ADDRESS=${QWEN_CODE_API_CONTAINER_ADDRESS:-0.0.0.0}
+      - DEFAULT_MODEL=${QWEN_CODE_API_MODEL:?'QWEN_CODE_API_MODEL is required'}
+      - LOG_LEVEL=${QWEN_CODE_API_LOG_LEVEL:?'QWEN_CODE_API_LOG_LEVEL is required'}
+      - MAX_RETRIES=${QWEN_CODE_API_MAX_RETRIES:?'QWEN_CODE_API_MAX_RETRIES is required'}
+      - RETRY_DELAY_MS=${QWEN_CODE_API_RETRY_DELAY_MS:?'QWEN_CODE_API_RETRY_DELAY_MS is required'}
+      - QWEN_CODE_AUTH_USE=${QWEN_CODE_API_AUTH_USE:?'QWEN_CODE_API_AUTH_USE is required'}
+      - LOG_REQUESTS=${QWEN_CODE_API_LOG_REQUESTS:?'QWEN_CODE_API_LOG_REQUESTS is required'}
+      - QWEN_CODE_API_KEY=${QWEN_CODE_API_KEY:-}
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - "-c"
+        - |
+          import urllib.request
+          req = urllib.request.Request(
+              'http://localhost:${QWEN_CODE_API_CONTAINER_PORT:-8080}/health',
+              headers={'X-API-Key': '${QWEN_CODE_API_KEY:-}'}
+          )
+          urllib.request.urlopen(req)
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  client-web-flutter:
+    build:
+      context: ./client-web-flutter
+      args:
+        REGISTRY_PREFIX_DOCKER_HUB: ${REGISTRY_PREFIX_DOCKER_HUB:-}
+        REGISTRY_PREFIX_GHCR: ${REGISTRY_PREFIX_GHCR:-}
+    volumes:
+      - client-web-flutter:/output
+
+volumes:
+  postgres_data:
+  client-web-flutter:
+
+networks:
+  cat-manager-network:
+    name: cat-manager-network
+    attachable: true

@@ -1,0 +1,38 @@
+[tool.uv.workspace]
+members = [
+    "backend",
+]
+
+[dependency-groups]
+dev = [
+    "poethepoet==0.42.1",
+    "pyright==1.1.408",
+    "pytest==9.0.2",
+    "ruff==0.15.8",
+]
+
+[tool.poe.tasks]
+[tool.poe.tasks.dev]
+help = "Run server"
+cmd = "python -m cat_manager.run"
+env = { PYTHONPATH = "backend/src" }
+
+[tool.ruff]
+exclude = []
+
+[tool.ruff.lint]
+select = ["RET503"]
+
+[tool.pyright]
+include = ["backend"]
+extraPaths = ["backend/src"]
+exclude = ["**/__pycache__", "**/node_modules", "**/.*", ".venv", ".direnv"]
+typeCheckingMode = "strict"
+reportAssignmentType = "none"
+reportIncompatibleVariableOverride = "none"
+reportUnknownMemberType = "none"
+reportMissingTypeStubs = "none"
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend/src"]

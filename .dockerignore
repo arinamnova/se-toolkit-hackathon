@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+.eggs/
+
+# Secrets
+.env.docker.secret
+*.secret
+
+# Flutter
+client-web-flutter/build/
+client-web-flutter/.dart_tool/
+client-web-flutter/pubspec.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

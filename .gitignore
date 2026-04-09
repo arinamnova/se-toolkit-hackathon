@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+.eggs/
+
+# uv
+uv.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env.docker.secret
+*.secret
+
+# Flutter
+client-web-flutter/build/
+client-web-flutter/.dart_tool/
+client-web-flutter/pubspec.lock
+
+# Docker volumes
+postgres_data/
+
+# Logs
+*.log

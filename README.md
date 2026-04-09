@@ -1,170 +1,155 @@
-# Lab 9 - Quiz and Hackathon
+# Cat Manager
 
-The lab opens with a quiz and then kicks off the hackathon.
+A web application for managing pet information, veterinary visits, and providing AI-powered chat assistance for pet owners.
 
-To get the full point for the lab, you need to:
+## Demo
 
-- Pass Tasks 1, 2, 3 during the lab AND
-- Finish Tasks 4 and 5 by the usual deadline of Thursday 23:59.
+<!-- Add screenshots of your product here -->
+![Dashboard Screenshot](docs/screenshots/dashboard.png)
+![Chat Interface](docs/screenshots/chat.png)
 
-Each student builds their own project:
+## Product Context
 
-- Go from an idea to a deployed product.
-- Use agents and LLMs throughout.
+### End Users
 
-----
+Pet owners who need to track their pets' health records, veterinary appointments, and get quick answers to pet care questions.
 
-## Task 1 (graded by TA after the lab)
+### Problem
 
-Pen and paper quiz:
+Pet owners struggle to keep track of their pets' medical history, vaccination schedules, and veterinary visits. They also lack a centralized platform to get AI-assisted advice on pet care.
 
-- 20 mins;
-- closed book, no devices;
-- you get 3 random questions from the question bank;
-- answer at least 2.
+### Solution
 
-## Task 2 (approved by TA during the lab)
+Cat Manager provides a unified platform to:
+- Register and manage pet profiles with medical records
+- Schedule and track veterinary visits
+- Get AI-powered chat assistance for pet-related questions
 
-Ideate and plan your project.
+## Features
 
-### Project idea
+### Implemented
 
-The project idea must be:
+- [x] Pet profile management (add, view, update pets)
+- [x] Veterinary visit scheduling and history
+- [x] AI-powered chat assistant for pet care questions
+- [x] Web-based user interface
+- [x] RESTful API backend
+- [x] Database for persistent storage
+- [x] Docker containerization for all services
+- [x] Deployment configuration
 
-- something simple to build;
-- clearly useful;
-- easy to explain.
+### Not Yet Implemented
 
-Define and show to your TA:
+- [ ] Push notifications for upcoming vet visits
+- [ ] Multi-user family accounts
+- [ ] Integration with veterinary clinics' systems
+- [ ] Mobile app (Flutter web version available)
 
-- End-user of the product
-- What problem your product solves for the end-user?
-- The product idea in one short sentence.
-- What is the product's core feature?
+## Usage
 
-### Implementation plan
+### For End Users
 
-When the idea is approved, produce a plan for two product versions.
+1. Access the deployed web application through your browser
+2. Register a new account or log in
+3. Add your pets and their information
+4. Schedule veterinary visits
+5. Use the chat feature to ask questions about pet care
 
-Version 1 does one core thing well:
+### For Developers
 
-- Pick the one feature most valuable to the end-user and relatively easy to implement;
-- It is a functioning product, not a prototype;
-- Must be shown to the TA upon completion for feedback.
+```bash
+# Clone the repository
+git clone https://github.com/arinamnova/se-toolkit-hackathon.git
+cd se-toolkit-hackathon
 
-Version 2 builds upon Version 1:
+# Copy environment variables
+cp .env.docker.example .env
 
-- Improves the initial feature or adds another one on top;
-- Address TA feedback from the lab;
-- Deploy and make it available for use.
+# Start all services with Docker Compose
+docker-compose up -d
+```
 
-The product must have the following components, each fulfilling a useful function:
+The application will be available at the configured ports (default: backend on port 8000, web client on port 3000).
 
-- backend;
-- database;
-- end-user-facing client: web app, mobile app, or LLM-powered agent, e.g. `nanobot`.
+## Deployment
 
-Note:
+### Prerequisites
 
-- You can use the setup from Lab 8 or start from scratch.
-- `Telegram` bots are blocked on university VMs.
+- **OS**: Ubuntu 24.04 LTS (or compatible Linux distribution)
+- **Required Software**:
+  - Docker (version 24.0 or higher)
+  - Docker Compose (version 2.20 or higher)
+  - Git
 
-## Task 3 (approved by TA during the lab)
+### Step-by-Step Deployment
 
-Implement Version 1 outlined in the plan:
+1. **Install Docker and Docker Compose** (if not already installed):
 
-- Build one core feature;
-- Follow best practices and git workflow;
-- Test it yourself and fix bugs;
-- Have the TA try it as a user;
-- Take note of the TA feedback;
-- Get TA's approval for the task to be marked as DONE.
+   ```bash
+   # Update package list
+   sudo apt update
 
-## Task 4
+   # Install prerequisites
+   sudo apt install -y ca-certificates curl gnupg
 
-Implement and deploy Version 2 outlined in the plan:
+   # Add Docker's official GPG key
+   sudo install -m 0755 -d /etc/apt/keyrings
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+   sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-- Build and polish functionality;
-- Take TA feedback into account;
-- Push all code to the GitHub repo (see the detailed instructions below);
-- Follow best practices and git workflow;
-- Document your solution;
-- Dockerize all services;
-- Deploy it to be accessible to use.
+   # Add Docker repository
+   echo \
+     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-Version 2 can be completed during the lab or after it, before the usual deadline.
+   # Install Docker
+   sudo apt update
+   sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   ```
 
-## Task 5 (demo and PDF submitted through Moodle)
+2. **Clone the Repository**:
 
-Submit a presentation with five slides:
+   ```bash
+   git clone https://github.com/arinamnova/se-toolkit-hackathon.git
+   cd se-toolkit-hackathon
+   ```
 
-1. Title:
+3. **Configure Environment Variables**:
 
-   - Product title
-   - Your name
-   - Your university email
-   - Your group
+   ```bash
+   cp .env.docker.example .env
+   # Edit .env file with your specific configuration
+   nano .env
+   ```
 
-2. Context:
+4. **Start Services**:
 
-   - End-user of the product
-   - What problem your product solves
-   - The product idea in one short sentence
+   ```bash
+   docker-compose up -d
+   ```
 
-3. Implementation:
+5. **Verify Deployment**:
 
-   - How you built the product
-   - What went into Version 1 and Version 2
-   - What TA feedback points you addressed
+   ```bash
+   docker-compose ps
+   docker-compose logs -f
+   ```
 
-4. Demo:
+6. **Access the Application**:
 
-   - Pre-recorded video demonstration of Version 2 with voice-over (no longer than 2 minutes).
-   - _Note:_ **This is the most important part of the presentation**.
+   - Web client: `http://<your-server-ip>:3000`
+   - Backend API: `http://<your-server-ip>:8000/docs`
 
-5. Links:
+### Services Architecture
 
-   - Link and QR code for each of these:
-     - The GitHub repo with the product code
-     - Deployed product (latest version)
+- **Backend**: FastAPI-based REST API with PostgreSQL database
+- **Database**: PostgreSQL for persistent data storage
+- **Web Client**: Flutter-based web application
+- **Reverse Proxy**: Caddy for SSL and routing (optional)
 
-----
+### Troubleshooting
 
-## Publishing the product code on GitHub
-
-- Publish the product code in a repository on `GitHub`.
-
-  The repository must be called `se-toolkit-hackathon`.
-
-- Add the MIT license file to make your product open-source.
-
-- Add `README.md` in the product repository.
-
-  `README.md` structure:
-
-  - Product name (as title)
-
-  - One-line description
-
-  - Demo:
-    - A couple of relevant screenshots of the product
-
-  - Product context:
-
-    - End users
-    - Problem that your product solves for end users
-    - Your solution
-
-  - Features:
-
-    - Implemented and not yet implemented features
-
-  - Usage:
-
-    - Explain how to use your product
-
-  - Deployment:
-
-    - Which OS the VM should run on (you may assume `Ubuntu 24.04` like on your university VMs)
-    - What should be installed on the VM
-    - Step-by-step deployment instructions
+- Check logs: `docker-compose logs <service-name>`
+- Restart services: `docker-compose restart`
+- Rebuild containers: `docker-compose up -d --build`

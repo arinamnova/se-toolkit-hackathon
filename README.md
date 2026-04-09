@@ -1,12 +1,16 @@
-# Cat Manager
+# Pet Manager
 
 A web application for managing pet information, veterinary visits, and providing AI-powered chat assistance for pet owners.
 
 ## Demo
 
-<!-- Add screenshots of your product here -->
-![Dashboard Screenshot](docs/screenshots/dashboard.png)
-![Chat Interface](docs/screenshots/chat.png)
+### Dashboard
+
+![Dashboard Screenshot](images/toolkit_demo_dashboard.png)
+
+### Chat Interface
+
+![Chat Interface](images/toolkit_demo_chat.png)
 
 ## Product Context
 
@@ -21,6 +25,7 @@ Pet owners struggle to keep track of their pets' medical history, vaccination sc
 ### Solution
 
 Cat Manager provides a unified platform to:
+
 - Register and manage pet profiles with medical records
 - Schedule and track veterinary visits
 - Get AI-powered chat assistance for pet-related questions
@@ -50,10 +55,9 @@ Cat Manager provides a unified platform to:
 ### For End Users
 
 1. Access the deployed web application through your browser
-2. Register a new account or log in
-3. Add your pets and their information
-4. Schedule veterinary visits
-5. Use the chat feature to ask questions about pet care
+2. Add your pets and their information
+3. Add vet visit history
+4. Use the chat feature to ask questions about pet care and stay up-to-date on the next visit
 
 ### For Developers
 
